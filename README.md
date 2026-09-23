@@ -30,8 +30,11 @@ Bash-скрипт для обнаружения новых или несанкц
 Правильно:
 
 `text`
+
 `python3`
+
 `mysqld`
+
 `node`
 
 ### Путь по умолчанию: /var/tmp/process_state.txt

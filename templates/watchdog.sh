@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/bin/bash
 
 STATE_FILE="/var/tmp/process_state.txt"
@@ -41,3 +42,6 @@ if [ -n "$NEW_PROCS" ]; then
     echo "$CURRENT_PROCS" > "$STATE_FILE"
     logger -t process_watchdog "$ALERT_MSG"
 fi   
+=======
+
+>>>>>>> origin/main

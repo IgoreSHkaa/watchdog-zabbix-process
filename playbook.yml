@@ -1,0 +1,69 @@
+---
+- name: Deploy Process Watchdog monitor script
+  hosts: all
+  become: yes
+  vars:
+    script_path: /usr/local/bin/process_watchdog.sh
+    env_dir: /etc/process_watchdog
+    env_file: "{{ env_dir }}/.env"
+    whitelist_file: /etc/process_whitelist.conf
+    cron_user: root
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name:
+          - zabbix-sender
+          - procps
+          - coreutils
+          - grep
+          - sed
+          - awk
+        state: present
+        lock_timeout: 300
+
+    - name: Create environment directory
+      file:
+        path: "{{ env_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Copy process watchdog script
+      copy:
+        src: files/watchdog.sh
+        dest: "{{ script_path }}"
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy default whitelist (if not exists)
+      copy:
+        src: files/whitelist.conf
+        dest: "{{ whitelist_file }}"
+        owner: root
+        group: root
+        mode: '0644'
+        force: no
+
+    - name: Generate .env from template
+      template:
+        src: templates/env.example
+        dest: "{{ env_file }}"
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Ensure cron job is present
+      cron:
+        name: "Run process watchdog monitor"
+        user: "{{ cron_user }}"
+        minute: "*/5"
+        job: ". {{ env_file }} && {{ script_path }} >/dev/null 2>&1"
+        state: present

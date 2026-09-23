@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #!/bin/bash
 
 STATE_FILE="/var/tmp/process_state.txt"
@@ -41,7 +40,4 @@ if [ -n "$NEW_PROCS" ]; then
     $ZABBIX_SENDER -z "$ZABBIX_SERVER" -s "$ZABBIX_HOST" -k "$ZABBIX_KEY" -o "$ALERT_MSG" -v
     echo "$CURRENT_PROCS" > "$STATE_FILE"
     logger -t process_watchdog "$ALERT_MSG"
-fi   
-=======
-
->>>>>>> origin/main
+fi

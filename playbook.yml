@@ -67,7 +67,7 @@
         job: ". {{ env_file }} && {{ script_path }} >/dev/null 2>&1"
         state: present
 
-    - name: Initialize watchdog state (run script once to create baseline)
+    - name: Initialize watchdog state
       command: "{{ script_path }}"
       register: watchdog_init
       failed_when: watchdog_init.rc != 0

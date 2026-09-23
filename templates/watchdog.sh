@@ -1,11 +1,11 @@
 #!/bin/bash
 
-STATE_FILE="/var/tmp/process_state.txt"
-WHITELIST_FILE="/etc/process_whitelist.conf"
-ZABBIX_SENDER="/usr/bin/zabbix_sender"
-ZABBIX_SERVER="127.0.0.1" 
-ZABBIX_HOST="MyServerHostname" 
-ZABBIX_KEY="process.watchdog.new.alert"
+STATE_FILE="${STATE_FILE:-/var/tmp/process_state.txt}"
+WHITELIST_FILE="${WHITELIST_FILE:-/etc/process_whitelist.conf}"
+ZABBIX_SENDER="${ZABBIX_SENDER:-/usr/bin/zabbix_sender}"
+ZABBIX_SERVER="${ZABBIX_SERVER:-127.0.0.1}"
+ZABBIX_HOST="${ZABBIX_HOST:-MyServerHostname}"
+ZABBIX_KEY="${ZABBIX_KEY:-process.watchdog.new.alert}"
 
 touch "$STATE_FILE"
 touch "$WHITELIST_FILE"

@@ -6,7 +6,6 @@
     script_path: /usr/local/bin/process_watchdog.sh
     env_dir: /etc/process_watchdog
     env_file: "{{ env_dir }}/.env"
-    whitelist_file: /etc/process_whitelist.conf
     cron_user: root
 
   tasks:
@@ -32,9 +31,6 @@
         name:
           - zabbix-sender
           - procps
-          - coreutils
-          - grep
-          - sed
           - gawk
         state: present
         lock_timeout: 300
@@ -54,15 +50,6 @@
         owner: root
         group: root
         mode: '0755'
-
-    - name: Deploy default whitelist (if not exists)
-      copy:
-        src: files/whitelist.conf
-        dest: "{{ whitelist_file }}"
-        owner: root
-        group: root
-        mode: '0644'
-        force: no
 
     - name: Generate .env from template
       template:

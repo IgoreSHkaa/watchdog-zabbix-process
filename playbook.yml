@@ -10,6 +10,18 @@
     cron_user: root
 
   tasks:
+    - name: Ensure /etc/apt/keyrings directory exists
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Zabbix official repository GPG key
+      get_url:
+        url: https://repo.zabbix.com/zabbix-official-repo.key
+        dest: /etc/apt/keyrings/zabbix-official-repo.key
+        mode: '0644'
+
     - name: Update apt cache
       apt:
         update_cache: yes

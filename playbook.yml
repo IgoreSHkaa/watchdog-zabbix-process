@@ -35,7 +35,7 @@
           - coreutils
           - grep
           - sed
-          - awk
+          - gawk
         state: present
         lock_timeout: 300
 

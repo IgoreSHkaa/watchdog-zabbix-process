@@ -11,10 +11,10 @@ touch "$STATE_FILE"
 touch "$WHITELIST_FILE"
 
 get_current_procs() {
-    ps -eo args --no-headers 2>/dev/null | \
-        awk '{print $1}' | \
-        sed 's/.*\///' | \
+    ps -eo comm --no-headers 2>/dev/null | \
+        sed 's/^[ \t]*//' | \
         grep -v '^$' | \
+        grep -v -E '^(kworker|rcu_|migration|ksoftirqd|cpuhp|idle_inject|jbd2|irq/|kcompactd|khugepaged|khungtaskd|kdevtmpfs|kauditd|ksmd|kswapd|kthreadd|ecryptfs)' | \
         sort -u
 }
 
@@ -26,16 +26,15 @@ else
     CURRENT_PROCS=$(get_current_procs)
 fi
 
-if [ -s "$STATE_FILE" ]; then
-    PREV_PROCS=$(cat "$STATE_FILE")
-else
-    PREV_PROCS=""
+if [ ! -s "$STATE_FILE" ]; then
+    echo "$CURRENT_PROCS" > "$STATE_FILE"
+    exit 0
 fi
-
+PREV_PROCS=$(cat "$STATE_FILE")
 NEW_PROCS=$(comm -13 <(echo "$PREV_PROCS" | sort) <(echo "$CURRENT_PROCS" | sort))
 
 if [ -n "$NEW_PROCS" ]; then
-    PROC_LIST=$(echo "$NEW_PROCS" | tr '\n' ', ' | sed 's/,$//')
+    PROC_LIST=$(echo "$NEW_PROCS" | tr '\n' ',' | sed 's/,$//')
     ALERT_MSG="Обнаружены новые процессы: ${PROC_LIST}"
     $ZABBIX_SENDER -z "$ZABBIX_SERVER" -s "$ZABBIX_HOST" -k "$ZABBIX_KEY" -o "$ALERT_MSG" -v
     echo "$CURRENT_PROCS" > "$STATE_FILE"
